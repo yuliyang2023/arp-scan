@@ -14,6 +14,29 @@ This is `README.md` for *arp-scan* version `1.10.1-git`.
 
 # Installation
 
+## macOS Intel binary
+
+Download `arp-scan-macos13-intel.tar.gz` from this repository's
+[latest release](https://github.com/yuliyang2023/arp-scan/releases/latest).
+In Terminal, install the archive under `/usr/local`:
+
+```sh
+cd ~/Downloads
+sudo tar -xzf arp-scan-macos13-intel.tar.gz -C /
+```
+
+Check the installation and scan the local network with:
+
+```sh
+/usr/local/bin/arp-scan --version
+sudo /usr/local/bin/arp-scan --localnet
+```
+
+The binary targets Intel Macs running macOS 13 or later. It includes libpcap
+statically but still uses macOS system libraries; it has not been tested on
+macOS 13 itself. Scanning requires elevated privileges. The archive installs
+files in `/usr/local` and may overwrite existing files with the same names.
+
 ## Building and Installing from Source
 
 *arp-scan* uses the GNU *automake* and *autoconf* tools. The installation process from the latest *github* source is:
