@@ -1,0 +1,43 @@
+name: macOS Intel build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15-intel
+    env:
+      MACOSX_DEPLOYMENT_TARGET: '13.0'
+      CFLAGS: '-O2 -arch x86_64'
+      LDFLAGS: '-arch x86_64'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build tools
+        run: brew install autoconf automake
+      - name: Configure and build
+        run: |
+          autoreconf --install
+          ./configure --prefix=/usr/local
+          make -j3
+          make check
+      - name: Verify binary and package
+        run: |
+          file arp-scan
+          lipo -verify_arch x86_64 arp-scan
+          otool -l arp-scan | grep -A 4 LC_BUILD_VERSION
+          ./arp-scan --version
+          make install DESTDIR="$RUNNER_TEMP/arp-scan"
+          chmod u-s "$RUNNER_TEMP/arp-scan/usr/local/bin/arp-scan"
+          tar -C "$RUNNER_TEMP/arp-scan" -czf arp-scan-macos13-intel.tar.gz usr/local
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arp-scan-macos13-intel
+          path: arp-scan-macos13-intel.tar.gz
+          if-no-files-found: error
