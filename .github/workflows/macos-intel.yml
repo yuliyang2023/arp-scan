@@ -30,7 +30,7 @@ jobs:
       - name: Verify binary and package
         run: |
           file arp-scan
-          lipo -verify_arch x86_64 arp-scan
+          lipo arp-scan -verify_arch x86_64
           otool -l arp-scan | grep -A 4 LC_BUILD_VERSION
           ./arp-scan --version
           make install DESTDIR="$RUNNER_TEMP/arp-scan"
